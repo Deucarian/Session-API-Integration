@@ -1,10 +1,10 @@
-# JorisHoef Session Helper APIHelper Bridge
+# JorisHoef SessionHelper APIHelper Bridge
 
 ## Overview
 
-JorisHoef Session Helper APIHelper Bridge is a Unity UPM package that connects Session Helper to APIHelper authentication.
+JorisHoef SessionHelper APIHelper Bridge is a Unity UPM package that connects Session Helper to APIHelper authentication.
 
-Package ID: `com.jorishoef.session-helper.api-helper`
+Package ID: `com.jorishoef.session-helper.api-helper-bridge`
 
 Use this package when a Unity project already uses both:
 
@@ -24,7 +24,7 @@ Install this bridge package alongside Session Helper and APIHelper:
   "dependencies": {
     "com.jorishoef.session-helper": "https://github.com/JorisHoef/Session-Helper.git#main",
     "com.jorishoef.api-helper": "https://github.com/JorisHoef/API-Helper.git#main",
-    "com.jorishoef.session-helper.api-helper": "https://github.com/JorisHoef/SessionHelper-APIHelper.git#main"
+    "com.jorishoef.session-helper.api-helper-bridge": "https://github.com/JorisHoef/SessionHelper-APIHelper-Bridge.git#main"
   }
 }
 ```

@@ -1,9 +1,9 @@
 {
-    "name": "SessionHelper.APIHelper.Tests",
+    "name": "SessionHelper.APIHelper.Bridge.Tests",
     "rootNamespace": "JorisHoef.SessionHelper.APIHelper.Tests",
     "references": [
         "SessionHelper",
-        "SessionHelper.APIHelper",
+        "SessionHelper.APIHelper.Bridge",
         "APIHelper"
     ],
     "includePlatforms": [

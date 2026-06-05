@@ -1,5 +1,5 @@
 {
-    "name": "SessionHelper.APIHelper",
+    "name": "SessionHelper.APIHelper.Bridge",
     "rootNamespace": "JorisHoef.SessionHelper.APIHelper",
     "references": [
         "SessionHelper",

@@ -1,7 +1,7 @@
 {
-  "name": "com.jorishoef.session-helper.api-helper",
+  "name": "com.jorishoef.session-helper.api-helper-bridge",
   "version": "1.0.0",
-  "displayName": "JorisHoef Session Helper APIHelper Bridge",
+  "displayName": "JorisHoef SessionHelper APIHelper Bridge",
   "description": "Bridge package that exposes Session Helper tokens through APIHelper authentication.",
   "unity": "2021.3",
   "author": {
