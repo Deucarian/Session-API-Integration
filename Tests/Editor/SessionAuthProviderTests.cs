@@ -3,15 +3,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace JorisHoef.SessionHelper.APIHelper.Tests
+namespace Deucarian.Session.APIBridge.Tests
 {
     public sealed class SessionAuthProviderTests
     {
         private static readonly DateTimeOffset Now = new DateTimeOffset(2026, 6, 5, 12, 0, 0, TimeSpan.Zero);
 
         [Test]
-        public async Task AuthenticatedSessionReturnsAccessToken()
+        public void AuthenticatedSessionReturnsAccessToken()
         {
+            RunAsync(async () =>
+            {
             var store = new InMemorySessionStore(
                 new SessionData("current-token", "refresh-token", Now.AddMinutes(5)));
             var service = new SessionService(store, utcNowProvider: () => Now);
@@ -21,22 +23,28 @@ namespace JorisHoef.SessionHelper.APIHelper.Tests
             string token = await provider.GetAccessTokenAsync(default(CancellationToken));
 
             Assert.AreEqual("current-token", token);
+            });
         }
 
         [Test]
-        public async Task UnauthenticatedSessionReturnsNull()
+        public void UnauthenticatedSessionReturnsNull()
         {
+            RunAsync(async () =>
+            {
             var service = new SessionService(new InMemorySessionStore(), utcNowProvider: () => Now);
             var provider = new SessionAuthProvider(service);
 
             string token = await provider.GetAccessTokenAsync(default(CancellationToken));
 
             Assert.IsNull(token);
+            });
         }
 
         [Test]
-        public async Task ExpiringSessionTriggersRefreshWhenEnabled()
+        public void ExpiringSessionTriggersRefreshWhenEnabled()
         {
+            RunAsync(async () =>
+            {
             var refreshService = new RecordingRefreshService(
                 SessionResult.Success(new SessionData("refreshed-token", "refresh-token", Now.AddMinutes(30))));
             var store = new InMemorySessionStore(
@@ -53,11 +61,14 @@ namespace JorisHoef.SessionHelper.APIHelper.Tests
 
             Assert.AreEqual("refreshed-token", token);
             Assert.AreEqual(1, refreshService.CallCount);
+            });
         }
 
         [Test]
-        public async Task RefreshDisabledDoesNotRefresh()
+        public void RefreshDisabledDoesNotRefresh()
         {
+            RunAsync(async () =>
+            {
             var refreshService = new RecordingRefreshService(
                 SessionResult.Success(new SessionData("refreshed-token", "refresh-token", Now.AddMinutes(30))));
             var store = new InMemorySessionStore(
@@ -74,11 +85,14 @@ namespace JorisHoef.SessionHelper.APIHelper.Tests
 
             Assert.AreEqual("current-token", token);
             Assert.AreEqual(0, refreshService.CallCount);
+            });
         }
 
         [Test]
-        public async Task ExpiredRefreshFailureReturnsNull()
+        public void ExpiredRefreshFailureReturnsNull()
         {
+            RunAsync(async () =>
+            {
             var refreshService = new RecordingRefreshService(
                 SessionResult.Failed("refresh_failed", "Refresh failed."));
             var store = new InMemorySessionStore(
@@ -95,6 +109,12 @@ namespace JorisHoef.SessionHelper.APIHelper.Tests
 
             Assert.IsNull(token);
             Assert.AreEqual(1, refreshService.CallCount);
+            });
+        }
+
+        private static void RunAsync(Func<Task> asyncTest)
+        {
+            asyncTest().GetAwaiter().GetResult();
         }
 
         private sealed class RecordingRefreshService : ISessionRefreshService

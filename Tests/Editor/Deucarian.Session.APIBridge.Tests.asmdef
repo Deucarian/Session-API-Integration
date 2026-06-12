@@ -1,0 +1,23 @@
+{
+  "name": "Deucarian.Session.APIBridge.Tests",
+  "rootNamespace": "Deucarian.Session.APIBridge.Tests",
+  "references": [
+    "Deucarian.Session",
+    "Deucarian.Session.APIBridge",
+    "Deucarian.API"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

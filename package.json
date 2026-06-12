@@ -1,28 +1,28 @@
 {
-  "name": "com.jorishoef.session-helper.api-helper-bridge",
+  "name": "com.deucarian.session.api-bridge",
   "version": "1.0.0",
-  "displayName": "JorisHoef SessionHelper APIHelper Bridge",
-  "description": "Bridge package that exposes Session Helper tokens through APIHelper authentication.",
+  "displayName": "Deucarian Session API Bridge",
+  "description": "Bridge package that exposes Deucarian Session tokens through Deucarian API authentication.",
   "unity": "2021.3",
   "author": {
-    "name": "JorisHoef"
+    "name": "Deucarian"
   },
   "dependencies": {
-    "com.jorishoef.session-helper": "1.0.0",
-    "com.jorishoef.api-helper": "1.0.0"
+    "com.deucarian.api": "1.0.0",
+    "com.deucarian.session": "1.0.0"
   },
   "keywords": [
     "session",
     "authentication",
-    "api-helper",
+    "api",
     "bridge",
     "token",
     "unity"
   ],
   "samples": [
     {
-      "displayName": "Basic APIHelper Bridge Usage",
-      "description": "Minimal sample showing SessionHelper access tokens supplied to APIHelper through SessionAuthProvider.",
+      "displayName": "Basic API Bridge Usage",
+      "description": "Minimal sample showing Session access tokens supplied to API through SessionAuthProvider.",
       "path": "Samples~/BasicUsage"
     }
   ]

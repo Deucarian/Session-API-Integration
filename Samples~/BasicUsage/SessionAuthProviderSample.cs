@@ -1,14 +1,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JorisHoef.APIHelper.Configuration;
-using JorisHoef.APIHelper.Core;
+using Deucarian.API.Configuration;
+using Deucarian.API.Core;
 using UnityEngine;
 
-namespace JorisHoef.SessionHelper.APIHelper.Samples
+namespace Deucarian.Session.APIBridge.Samples
 {
     /// <summary>
-    /// Minimal sample showing how to pass Session Helper tokens to APIHelper.
+    /// Minimal sample showing how to pass Session tokens to API.
     /// </summary>
     public sealed class SessionAuthProviderSample : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace JorisHoef.SessionHelper.APIHelper.Samples
         private void Awake()
         {
             sessionService = new SessionService(
-                new PlayerPrefsSessionStore("session-helper.api-helper.sample"),
+                new PlayerPrefsSessionStore("session.api.sample"),
                 new FakeRefreshService());
 
             var authProvider = new SessionAuthProvider(sessionService);
