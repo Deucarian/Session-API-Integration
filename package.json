@@ -7,6 +7,10 @@
   "author": {
     "name": "Deucarian"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deucarian/Session-API-Bridge.git"
+  },
   "dependencies": {
     "com.deucarian.api": "1.0.0",
     "com.deucarian.session": "1.0.0"
