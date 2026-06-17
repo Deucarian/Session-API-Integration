@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace Deucarian.Session.APIBridge.Tests
+namespace Deucarian.Session.APIIntegration.Tests
 {
     public sealed class SessionAuthProviderTests
     {

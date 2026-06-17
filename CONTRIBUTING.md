@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve the Session API bridge.
+Thanks for helping improve the Session API integration.
 
 ## Development Guidelines
 
@@ -13,4 +13,4 @@ Thanks for helping improve the Session API bridge.
 
 ## Testing
 
-Run the package editor tests from Unity's Test Runner in a project that has Session, API, and this bridge package installed.
+Run the package editor tests from Unity's Test Runner in a project that has Session, API, and this integration package installed.

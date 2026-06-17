@@ -1,14 +1,11 @@
 {
-  "name": "Deucarian.Session.APIBridge.Tests",
-  "rootNamespace": "Deucarian.Session.APIBridge.Tests",
+  "name": "Deucarian.Session.APIIntegration",
+  "rootNamespace": "Deucarian.Session.APIIntegration",
   "references": [
     "Deucarian.Session",
-    "Deucarian.Session.APIBridge",
     "Deucarian.API"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
@@ -16,8 +13,5 @@
   "autoReferenced": true,
   "defineConstraints": [],
   "versionDefines": [],
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ],
   "noEngineReferences": false
 }

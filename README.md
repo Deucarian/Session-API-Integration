@@ -1,30 +1,32 @@
-# Deucarian Session API Bridge
+# Deucarian Session API Integration
 
 ## Overview
 
-Deucarian Session API Bridge is a Unity UPM package that connects Session to API authentication.
+Deucarian Session API Integration is a Unity UPM package that connects Session to API authentication.
 
-Package ID: `com.deucarian.session.api-bridge`
+Package ID: `com.deucarian.session.api-integration`
+
+Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. The source repository URL still uses `Session-API-Bridge.git` until the GitHub repository is renamed.
 
 Use this package when a Unity project already uses both:
 
 - `com.deucarian.session`
 - `com.deucarian.api`
 
-The bridge provides `SessionAuthProvider`, an API `IApiAuthProvider` implementation backed by an `ISessionService`.
+The integration provides `SessionAuthProvider`, an API `IApiAuthProvider` implementation backed by an `ISessionService`.
 
 No scripting define symbols are required.
 
 ## Installation
 
-Install this bridge package alongside Session and API:
+Install this integration package alongside Session and API:
 
 ```json
 {
   "dependencies": {
     "com.deucarian.session": "https://github.com/Deucarian/Session.git#main",
     "com.deucarian.api": "https://github.com/Deucarian/API.git#main",
-    "com.deucarian.session.api-bridge": "https://github.com/Deucarian/Session-API-Bridge.git#main"
+    "com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Bridge.git#main"
   }
 }
 ```
@@ -49,7 +51,7 @@ It does not replace either package. It only adapts Session's current session tok
 ```csharp
 using Deucarian.API.Core;
 using Deucarian.Session;
-using Deucarian.Session.APIBridge;
+using Deucarian.Session.APIIntegration;
 
 ISessionService sessionService = new SessionService(
     new PlayerPrefsSessionStore("my-game.session"),
@@ -88,7 +90,7 @@ If refresh fails, the provider does not throw or clear the session itself. It re
 
 The package contains one sample:
 
-- `Basic API Bridge Usage`
+- `Basic API Integration Usage`
 - Path: `Samples~/BasicUsage`
 - Script: `SessionAuthProviderSample`
 

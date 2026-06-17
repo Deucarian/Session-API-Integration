@@ -1,8 +1,8 @@
 {
-  "name": "com.deucarian.session.api-bridge",
-  "version": "1.0.0",
-  "displayName": "Deucarian Session API Bridge",
-  "description": "Bridge package that exposes Deucarian Session tokens through Deucarian API authentication.",
+  "name": "com.deucarian.session.api-integration",
+  "version": "1.0.1",
+  "displayName": "Deucarian Session API Integration",
+  "description": "Integration package that exposes Deucarian Session tokens through Deucarian API authentication.",
   "unity": "2021.3",
   "author": {
     "name": "Deucarian"
@@ -12,20 +12,20 @@
     "url": "git+https://github.com/Deucarian/Session-API-Bridge.git"
   },
   "dependencies": {
-    "com.deucarian.api": "1.0.1",
-    "com.deucarian.session": "1.0.1"
+    "com.deucarian.api": "1.0.2",
+    "com.deucarian.session": "1.0.2"
   },
   "keywords": [
     "session",
     "authentication",
     "api",
-    "bridge",
+    "integration",
     "token",
     "unity"
   ],
   "samples": [
     {
-      "displayName": "Basic API Bridge Usage",
+      "displayName": "Basic API Integration Usage",
       "description": "Minimal sample showing Session access tokens supplied to API through SessionAuthProvider.",
       "path": "Samples~/BasicUsage"
     }

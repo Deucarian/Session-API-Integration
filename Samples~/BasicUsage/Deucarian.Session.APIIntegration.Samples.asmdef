@@ -1,9 +1,9 @@
 {
-  "name": "Deucarian.Session.APIBridge.Samples",
-  "rootNamespace": "Deucarian.Session.APIBridge.Samples",
+  "name": "Deucarian.Session.APIIntegration.Samples",
+  "rootNamespace": "Deucarian.Session.APIIntegration.Samples",
   "references": [
     "Deucarian.Session",
-    "Deucarian.Session.APIBridge",
+    "Deucarian.Session.APIIntegration",
     "Deucarian.API"
   ],
   "includePlatforms": [],

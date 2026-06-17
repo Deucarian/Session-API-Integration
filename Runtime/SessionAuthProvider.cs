@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Deucarian.API.Authentication;
 
-namespace Deucarian.Session.APIBridge
+namespace Deucarian.Session.APIIntegration
 {
     /// <summary>
     /// Exposes the current Session access token through API's <see cref="IApiAuthProvider"/> interface.

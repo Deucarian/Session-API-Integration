@@ -5,7 +5,7 @@ using Deucarian.API.Configuration;
 using Deucarian.API.Core;
 using UnityEngine;
 
-namespace Deucarian.Session.APIBridge.Samples
+namespace Deucarian.Session.APIIntegration.Samples
 {
     /// <summary>
     /// Minimal sample showing how to pass Session tokens to API.
