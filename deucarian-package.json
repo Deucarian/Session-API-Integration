@@ -1,0 +1,23 @@
+{
+  "packageId": "com.deucarian.session.api-integration",
+  "displayName": "Deucarian Session API Integration",
+  "ownedCapabilities": [],
+  "runtimeAssemblies": [
+    "Deucarian.Session.APIIntegration"
+  ],
+  "editorAssemblies": [],
+  "sampleAssemblies": [
+    "Deucarian.Session.APIIntegration.Samples"
+  ],
+  "testAssemblies": [
+    "Deucarian.Session.APIIntegration.Tests"
+  ],
+  "requiredDependencies": [
+    "com.deucarian.api",
+    "com.deucarian.session"
+  ],
+  "optionalVersionDefinedDependencies": [],
+  "allowedDirectDebugCalls": [],
+  "allowedDirectUnityObjectLifetimeCalls": [],
+  "expectedSamplesRoot": "Samples~"
+}
