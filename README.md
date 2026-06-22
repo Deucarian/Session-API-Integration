@@ -6,7 +6,7 @@ Deucarian Session API Integration is a Unity UPM package that connects Session t
 
 Package ID: `com.deucarian.session.api-integration`
 
-Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. The source repository URL still uses `Session-API-Bridge.git` until the GitHub repository is renamed.
+Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. Current installs use the `Session-API-Integration.git` repository.
 
 Use this package when a Unity project already uses both:
 
@@ -26,7 +26,7 @@ Install this integration package alongside Session and API:
   "dependencies": {
     "com.deucarian.session": "https://github.com/Deucarian/Session.git#main",
     "com.deucarian.api": "https://github.com/Deucarian/API.git#main",
-    "com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Bridge.git#main"
+    "com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Integration.git#main"
   }
 }
 ```
@@ -39,6 +39,8 @@ This package depends on:
 
 - `com.deucarian.session`
 - `com.deucarian.api`
+
+Current package version: `1.0.2`.
 
 It does not replace either package. It only adapts Session's current session token to API's authentication contract.
 

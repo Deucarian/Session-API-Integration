@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 - 2026-06-22
+
+- Updated package repository metadata to `Deucarian/Session-API-Integration`.
+- Updated active README installation examples to use the current Integration repository URL.
+
 ## 1.0.1 - 2026-06-17
 
 - Renamed the package identity from `com.deucarian.session.api-bridge` to `com.deucarian.session.api-integration`.
