@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - 2026-06-22
+
+- Updated exact API and Session dependencies for the accepted stable release line.
+
 ## 1.0.3 - 2026-06-22
 
 - Updated the exact `com.deucarian.api` dependency to `1.1.1`.
