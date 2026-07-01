@@ -1,37 +1,44 @@
 # Deucarian Session API Integration
 
-## Overview
+## What this is
 
-Deucarian Session API Integration is a Unity UPM package that connects Session to API authentication.
-
-Package ID: `com.deucarian.session.api-integration`
-
-Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. Current installs use the `Session-API-Integration.git` repository.
-
-Use this package when a Unity project already uses both:
-
-- `com.deucarian.session`
-- `com.deucarian.api`
+`com.deucarian.session.api-integration` is a Unity UPM package that connects Session to API authentication.
 
 The integration provides `SessionAuthProvider`, an API `IApiAuthProvider` implementation backed by an `ISessionService`.
 
+Current package version: `1.0.4`.
+
+## When to use it
+
+- Your project already uses `com.deucarian.session` and `com.deucarian.api`.
+- You want API requests to use the current Session access token.
+- You want optional refresh-before-auth behavior through Session rather than duplicating token logic in API callers.
+
+## When not to use it
+
+- Do not use this package without both Session and API installed.
+- Do not put login, refresh backend calls, session storage, or API request execution here.
+- Do not use this package as a replacement for either target package.
+
+Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. Current installs use the `Session-API-Integration.git` repository.
+
 No scripting define symbols are required.
 
-## Installation
+## Install
 
-Install this integration package alongside Session and API:
+Stable:
 
 ```json
-{
-  "dependencies": {
-    "com.deucarian.session": "https://github.com/Deucarian/Session.git#main",
-    "com.deucarian.api": "https://github.com/Deucarian/API.git#main",
-    "com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Integration.git#main"
-  }
-}
+"com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Integration.git#main"
 ```
 
-For development builds, use the `develop` branch refs for each package.
+Development:
+
+```json
+"com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Integration.git#develop"
+```
+
+Install Session and API from the same channel unless you intentionally need a mixed-channel test project.
 
 ## Dependencies
 
@@ -40,11 +47,13 @@ This package depends on:
 - `com.deucarian.session` `1.0.4`
 - `com.deucarian.api` `1.1.3`
 
-Current package version: `1.0.4`.
-
 It does not replace either package. It only adapts Session's current session token to API's authentication contract.
 
-## Public API
+## Unity compatibility
+
+Requires Unity 2021.3 or newer.
+
+## Public API map
 
 - `SessionAuthProvider`: implements API's `IApiAuthProvider` and reads tokens from an `ISessionService`.
 
@@ -107,8 +116,28 @@ The sample uses fake session data and a fake refresh service. It does not make b
 - API package behavior.
 - Session core runtime APIs.
 
+## Validation
+
+Run the shared package validator from the repository root:
+
+```powershell
+python C:/Repositories/Package-Registry/Tools/deucarian_package_validator.py --registry-root C:/Repositories/Package-Registry --repository-root . --config deucarian-package.json
+```
+
+Run the package's EditMode tests in Unity after code or assembly definition changes.
+
+Documentation-only updates should still pass:
+
+```powershell
+git diff --check
+```
+
 ## Architecture / Contributor Notes
 
 - [AGENTS.md](AGENTS.md) contains repository-specific ownership and Codex guidance.
 - Deucarian architecture rules live in [Package Registry](https://github.com/Deucarian/Package-Registry/blob/develop/ARCHITECTURE.md).
 - Capability ownership is tracked in [CAPABILITY_OWNERSHIP.md](https://github.com/Deucarian/Package-Registry/blob/develop/CAPABILITY_OWNERSHIP.md).
+
+## License
+
+See [LICENSE.md](LICENSE.md).
