@@ -1,6 +1,7 @@
 {
   "packageId": "com.deucarian.session.api-integration",
   "displayName": "Deucarian Session API Integration",
+  "samplePolicy": "playable-scene",
   "ownedCapabilities": [],
   "runtimeAssemblies": [
     "Deucarian.Session.APIIntegration"

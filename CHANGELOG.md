@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5 - 2026-07-17
+
+- Completed the integration sample contract and updated exact API and Session dependencies for the coordinated portfolio release.
+
 ## 1.0.4 - 2026-06-22
 
 - Updated exact API and Session dependencies for the accepted stable release line.
