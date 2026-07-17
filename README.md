@@ -6,7 +6,7 @@
 
 The integration provides `SessionAuthProvider`, an API `IApiAuthProvider` implementation backed by an `ISessionService`.
 
-Current package version: `1.0.4`.
+Current package version: `1.0.5`.
 
 ## When to use it
 
@@ -44,8 +44,8 @@ Install Session and API from the same channel unless you intentionally need a mi
 
 This package depends on:
 
-- `com.deucarian.session` `1.0.4`
-- `com.deucarian.api` `1.1.3`
+- `com.deucarian.session` `1.0.5`
+- `com.deucarian.api` `1.1.4`
 
 It does not replace either package. It only adapts Session's current session token to API's authentication contract.
 
