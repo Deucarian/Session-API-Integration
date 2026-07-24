@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6 - 2026-07-24
+
+- Verified that a long-lived `SessionAuthProvider` resolves runtime access-token replacements without API-client reconstruction.
+- Updated the exact Session dependency to `1.0.6`.
+
 ## 1.0.5 - 2026-07-17
 
 - Completed the integration sample contract and updated exact API and Session dependencies for the coordinated portfolio release.
