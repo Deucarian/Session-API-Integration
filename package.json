@@ -1,6 +1,6 @@
 {
   "name": "com.deucarian.session.api-integration",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "displayName": "Deucarian Session API Integration",
   "description": "Integration package that exposes Deucarian Session tokens through Deucarian API authentication.",
   "unity": "2021.3",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "com.deucarian.api": "1.1.4",
-    "com.deucarian.session": "1.0.5"
+    "com.deucarian.session": "1.0.6"
   },
   "keywords": [
     "session",

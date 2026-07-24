@@ -27,6 +27,33 @@ namespace Deucarian.Session.APIIntegration.Tests
         }
 
         [Test]
+        public void RuntimeReplacementIsReturnedWithoutRecreatingProvider()
+        {
+            RunAsync(async () =>
+            {
+            var service =
+                new SessionService(
+                    new InMemorySessionStore(),
+                    utcNowProvider: () => Now);
+            var provider = new SessionAuthProvider(
+                service,
+                refreshIfExpiredOrExpiringSoon: false);
+            await service.ReplaceAccessTokenAsync("initial-token");
+
+            string initial =
+                await provider.GetAccessTokenAsync(
+                    default(CancellationToken));
+            await service.ReplaceAccessTokenAsync("replacement-token");
+            string replacement =
+                await provider.GetAccessTokenAsync(
+                    default(CancellationToken));
+
+            Assert.AreEqual("initial-token", initial);
+            Assert.AreEqual("replacement-token", replacement);
+            });
+        }
+
+        [Test]
         public void UnauthenticatedSessionReturnsNull()
         {
             RunAsync(async () =>
