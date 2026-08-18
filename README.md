@@ -40,6 +40,7 @@ Unity 2021.3 or newer is required. No scripting define symbols are required.
 - `SessionTokenEndpointInputDefinition`: describes a transient field, placement, label, required state, and masking hint.
 - `SessionTokenEndpointInputValues`: disposable in-memory values supplied for one exchange.
 - `SessionTokenEndpointResponseMapping`: maps access token, optional refresh token, and optional expiry JSON paths.
+- `SessionAccessTokenExpiryResolver`: reads an unverified JWT `exp` NumericDate for local expiry presentation without claiming token validity.
 - `SessionTokenEndpointExecutor`: sends a suppressed-log token request and returns sanitized `SessionResult` data.
 - `SessionTokenEndpointLoginService`: `ISessionLoginService<SessionTokenEndpointInputValues>` adapter.
 - `SessionTokenEndpointRefreshService`: `ISessionRefreshService` adapter for an explicitly separate refresh endpoint.
@@ -102,7 +103,9 @@ using (var inputs = new SessionTokenEndpointInputValues())
 
 Input definitions support endpoint placeholders, JSON body fields, query parameters, and headers. Definitions contain labels and masking hints only. Actual values are not Unity serializable and are never written into the profile.
 
-Response expiry supports an ISO-8601 timestamp, Unix seconds, seconds-from-now, or an optional JWT `exp` fallback. When a separately configured refresh endpoint omits a replacement refresh token, the current refresh token is preserved.
+Response expiry supports an ISO-8601 timestamp, Unix seconds, seconds-from-now, or an optional JWT `exp` fallback. JWT NumericDate values may be integer or finite fractional JSON numbers or numeric strings. `SessionAccessTokenExpiryResolver.TryResolveJwtExpiry` exposes the same parser for manual and remembered-token flows. Parsed JWT metadata does not validate a token's signature, issuer, audience, revocation state, or server acceptance. When a separately configured refresh endpoint omits a replacement refresh token, the current refresh token is preserved.
+
+HTTP 401 and 403 responses use the sanitized `SessionTokenEndpointErrorCodes.AuthenticationRejected` code. Other transport and server failures continue to use `RequestFailed`; raw response data and backend messages are never copied into Session errors.
 
 ## Credential safety
 
