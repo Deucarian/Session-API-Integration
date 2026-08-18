@@ -1,28 +1,14 @@
 # Deucarian Session API Integration
 
-## What this is
+`com.deucarian.session.api-integration` connects Deucarian Session to Deucarian API authentication. Version `1.1.0` also provides backend-neutral, credential-safe token endpoint profiles and adapters.
 
-`com.deucarian.session.api-integration` is a Unity UPM package that connects Session to API authentication.
+Use it when an application needs either:
 
-The integration provides `SessionAuthProvider`, an API `IApiAuthProvider` implementation backed by an `ISessionService`.
+- API requests authenticated by the current `ISessionService` token.
+- A reusable token acquisition flow configured by endpoint, transient inputs, and response JSON paths.
+- A genuine refresh endpoint integrated with Session without duplicating request or mapping logic.
 
-Current package version: `1.0.6`.
-
-## When to use it
-
-- Your project already uses `com.deucarian.session` and `com.deucarian.api`.
-- You want API requests to use the current Session access token.
-- You want optional refresh-before-auth behavior through Session rather than duplicating token logic in API callers.
-
-## When not to use it
-
-- Do not use this package without both Session and API installed.
-- Do not put login, refresh backend calls, session storage, or API request execution here.
-- Do not use this package as a replacement for either target package.
-
-Migration note: replace old manifest entries for `com.deucarian.session.api-bridge` with `com.deucarian.session.api-integration`. Current installs use the `Session-API-Integration.git` repository.
-
-No scripting define symbols are required.
+Do not put product-specific endpoints, credentials, authentication UI, or session storage in this package.
 
 ## Install
 
@@ -38,26 +24,27 @@ Development:
 "com.deucarian.session.api-integration": "https://github.com/Deucarian/Session-API-Integration.git#develop"
 ```
 
-Install Session and API from the same channel unless you intentionally need a mixed-channel test project.
+Dependencies:
 
-## Dependencies
-
-This package depends on:
-
+- `com.deucarian.api` `1.1.5`
 - `com.deucarian.session` `1.0.6`
-- `com.deucarian.api` `1.1.4`
+- `com.unity.nuget.newtonsoft-json` `3.2.2`
 
-It does not replace either package. It only adapts Session's current session token to API's authentication contract.
+Unity 2021.3 or newer is required. No scripting define symbols are required.
 
-## Unity compatibility
+## Public API
 
-Requires Unity 2021.3 or newer.
+- `SessionAuthProvider`: exposes the current Session token through API's `IApiAuthProvider`.
+- `SessionTokenEndpointProfile`: credential-free ScriptableObject profile suitable for a project asset.
+- `SessionTokenEndpointConfig`: immutable runtime snapshot of a profile.
+- `SessionTokenEndpointInputDefinition`: describes a transient field, placement, label, required state, and masking hint.
+- `SessionTokenEndpointInputValues`: disposable in-memory values supplied for one exchange.
+- `SessionTokenEndpointResponseMapping`: maps access token, optional refresh token, and optional expiry JSON paths.
+- `SessionTokenEndpointExecutor`: sends a suppressed-log token request and returns sanitized `SessionResult` data.
+- `SessionTokenEndpointLoginService`: `ISessionLoginService<SessionTokenEndpointInputValues>` adapter.
+- `SessionTokenEndpointRefreshService`: `ISessionRefreshService` adapter for an explicitly separate refresh endpoint.
 
-## Public API map
-
-- `SessionAuthProvider`: implements API's `IApiAuthProvider` and reads tokens from an `ISessionService`.
-
-## Usage
+## Session-backed API authentication
 
 ```csharp
 using Deucarian.API.Core;
@@ -72,49 +59,75 @@ var authProvider = new SessionAuthProvider(sessionService);
 IApiClient apiClient = ApiClientFactory.Create(apiClientConfig, authProvider);
 ```
 
-`SessionAuthProvider` returns the access token without the `Bearer` prefix. API owns the authorization header formatting.
+`SessionAuthProvider` returns the token without a `Bearer` prefix. API owns authorization-header formatting. By default it asks Session to refresh when an access token is expired or expiring soon. Pass `refreshIfExpiredOrExpiringSoon: false` to disable that behavior.
 
-## Refresh Behavior
+## Configurable token acquisition
 
-By default, `SessionAuthProvider` attempts `ISessionService.RefreshAsync` when the current access token is expired or expiring soon.
-
-```csharp
-var authProvider = new SessionAuthProvider(
-    sessionService,
-    refreshIfExpiredOrExpiringSoon: true);
-```
-
-Disable refresh attempts by passing `false`:
+Create a credential-free asset from `Assets > Create > Deucarian > Session > Token Endpoint Profile`, or construct the same configuration in code:
 
 ```csharp
-var authProvider = new SessionAuthProvider(
-    sessionService,
-    refreshIfExpiredOrExpiringSoon: false);
+var config = new SessionTokenEndpointConfig(
+    "https://{tenant}.auth.example.invalid/token",
+    new[]
+    {
+        new SessionTokenEndpointInputDefinition(
+            "tenant",
+            "tenant",
+            "Tenant",
+            SessionTokenEndpointInputPlacement.Endpoint),
+        new SessionTokenEndpointInputDefinition(
+            "identity",
+            "identity",
+            "Identity"),
+        new SessionTokenEndpointInputDefinition(
+            "password",
+            "password",
+            "Password",
+            isSecret: true)
+    },
+    new SessionTokenEndpointResponseMapping(
+        accessTokenJsonPath: "access_token",
+        refreshTokenJsonPath: "refresh_token",
+        expiresInSecondsJsonPath: "expires_in"));
+
+var loginService = new SessionTokenEndpointLoginService(apiClient, config);
+using (var inputs = new SessionTokenEndpointInputValues())
+{
+    inputs.Set("tenant", "example");
+    inputs.Set("identity", "synthetic-user");
+    inputs.Set("password", "synthetic-password");
+    SessionResult result = await sessionService.LoginAsync(inputs, loginService);
+}
 ```
 
-If refresh fails, the provider does not throw or clear the session itself. It returns based on the `ISessionService` state after the refresh attempt:
+Input definitions support endpoint placeholders, JSON body fields, query parameters, and headers. Definitions contain labels and masking hints only. Actual values are not Unity serializable and are never written into the profile.
 
-- Expired sessions return `null`.
-- Still-valid expiring-soon sessions may return the current token when `SessionRefreshFailurePolicy.PreserveSession` keeps the session authenticated.
+Response expiry supports an ISO-8601 timestamp, Unix seconds, seconds-from-now, or an optional JWT `exp` fallback. When a separately configured refresh endpoint omits a replacement refresh token, the current refresh token is preserved.
+
+## Credential safety
+
+Every exchange sets `ApiRequest.SuppressLogging = true`, including failed exchanges. Returned `SessionError` values use stable package codes and never include request URLs, raw response bodies, backend messages, credentials, or tokens.
+
+Consumers should dispose `SessionTokenEndpointInputValues` immediately after use. They must never place real credentials in profile assets, repository files, logs, diagnostics, or exception messages.
+
+## Honest refresh semantics
+
+`SessionTokenEndpointRefreshService` must only be constructed from a genuine, separately configured refresh endpoint. Use `SessionTokenEndpointReservedInputKeys.RefreshToken` and `AccessToken` in that profile to map current Session values.
+
+Do not present login or reacquisition as silent OAuth refresh when a backend does not document refresh semantics. Use `SessionTokenEndpointLoginService` for interactive acquisition or reauthentication instead.
 
 ## Samples
 
-The package contains one sample:
+The `Basic API Integration Usage` sample demonstrates `SessionAuthProvider` with synthetic session data. It does not make backend calls.
 
-- `Basic API Integration Usage`
-- Path: `Samples~/BasicUsage`
-- Script: `SessionAuthProviderSample`
+## Ownership boundary
 
-The sample uses fake session data and a fake refresh service. It does not make backend calls.
+This package owns generic Session/API adapter behavior. It does not own:
 
-## What This Package Does Not Own
-
-- Session storage.
-- Login and refresh backend calls.
-- API request execution.
-- Authorization header formatting.
-- API package behavior.
-- Session core runtime APIs.
+- Session storage or Session core runtime APIs.
+- Product-specific endpoint presets or login modes.
+- Credential persistence or authentication UI.
+- API transport, logging, or authorization-header formatting.
 
 ## Validation
 
@@ -124,33 +137,10 @@ Run the shared package validator from the repository root:
 python C:/Repositories/Package-Registry/Tools/deucarian_package_validator.py --registry-root C:/Repositories/Package-Registry --repository-root . --config deucarian-package.json
 ```
 
-Run the package's EditMode tests in Unity after code or assembly definition changes.
+Run the package EditMode tests after code or assembly changes and always run `git diff --check`.
 
-Documentation-only updates should still pass:
-
-```powershell
-git diff --check
-```
-
-## Architecture / Contributor Notes
-
-- [AGENTS.md](AGENTS.md) contains repository-specific ownership and Codex guidance.
-- Deucarian architecture rules live in [Package Registry](https://github.com/Deucarian/Package-Registry/blob/develop/ARCHITECTURE.md).
-- Capability ownership is tracked in [CAPABILITY_OWNERSHIP.md](https://github.com/Deucarian/Package-Registry/blob/develop/CAPABILITY_OWNERSHIP.md).
+See [AGENTS.md](AGENTS.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the Package Registry architecture documents for contributor rules.
 
 ## License
 
 See [LICENSE.md](LICENSE.md).
-
-## Quick Start
-
-1. Install the package through Deucarian Package Installer or Unity Package Manager using the URL above.
-2. Let Unity finish resolving packages and compiling assemblies.
-3. Import the `Basic API Integration Usage` sample if you want a working reference scene or setup.
-4. Start from the package README sections above and the public runtime/editor APIs in this repository.
-
-## Troubleshooting
-
-- Package does not resolve: confirm the stable or development Git URL matches the Package Registry entry and that required Deucarian dependencies are installed.
-- Unity compile errors after install: let Package Manager finish resolving dependencies, then check asmdef references against `package.json` dependencies.
-- Behavior appears to belong in another package: consult `AGENTS.md` and the Package Registry governance docs before moving or duplicating code.

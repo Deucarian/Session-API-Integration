@@ -15,7 +15,8 @@
   ],
   "requiredDependencies": [
     "com.deucarian.api",
-    "com.deucarian.session"
+    "com.deucarian.session",
+    "com.unity.nuget.newtonsoft-json"
   ],
   "optionalVersionDefinedDependencies": [],
   "allowedDirectDebugCalls": [],

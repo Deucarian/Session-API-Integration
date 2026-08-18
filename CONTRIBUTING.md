@@ -7,7 +7,9 @@ Thanks for helping improve the Session API integration.
 - Keep this package focused on adapting Session to API.
 - Do not change API from this package.
 - Do not change Session core runtime APIs from this package.
-- Do not add backend-specific login, refresh, or API request behavior.
+- Keep token endpoint execution declarative and backend-neutral; backend-specific presets belong in consuming packages.
+- Never serialize credentials in a `SessionTokenEndpointProfile` or include token exchange values in errors or logs.
+- Every token exchange must set `ApiRequest.SuppressLogging`.
 - Add XML documentation for public runtime APIs.
 - Add editor tests for behavior changes.
 
