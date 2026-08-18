@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 - 2026-08-18
+
+- Fixed JWT `exp` fallback for finite fractional NumericDate values and numeric strings.
+- Exposed token-expiry metadata resolution for shared manual and remembered-token flows.
+- Added a sanitized authentication-rejected result for HTTP 401 and 403 token-endpoint responses.
+
 ## 1.1.0 - 2026-08-18
 
 - Added credential-free `SessionTokenEndpointProfile` assets and immutable runtime configs.

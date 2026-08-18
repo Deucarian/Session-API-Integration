@@ -1,6 +1,6 @@
 {
   "name": "com.deucarian.session.api-integration",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "displayName": "Deucarian Session API Integration",
   "description": "Session-aware Deucarian API authentication plus credential-safe configurable token endpoint adapters.",
   "unity": "2021.3",
