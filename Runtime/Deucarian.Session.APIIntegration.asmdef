@@ -3,7 +3,8 @@
   "rootNamespace": "Deucarian.Session.APIIntegration",
   "references": [
     "Deucarian.Session",
-    "Deucarian.API"
+    "Deucarian.API",
+    "Newtonsoft.Json"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
