@@ -111,8 +111,11 @@ namespace Deucarian.Session.APIIntegration.Tests
         {
             RunAsync(async () =>
             {
-                long expiresAt = Now.AddMinutes(15).ToUnixTimeSeconds();
-                string jwt = CreateSyntheticJwt(expiresAt);
+                long wholeSeconds = Now.AddMinutes(15).ToUnixTimeSeconds();
+                string numericDate = wholeSeconds.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture) +
+                    ".625";
+                string jwt = CreateSyntheticJwt(numericDate);
                 var client = new RecordingApiClient
                 {
                     NextResult = SuccessResponse(
@@ -130,9 +133,69 @@ namespace Deucarian.Session.APIIntegration.Tests
 
                     Assert.That(result.Succeeded, Is.True);
                     Assert.That(result.Session.ExpiresAtUtc,
-                        Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(expiresAt)));
+                        Is.EqualTo(
+                            DateTimeOffset.FromUnixTimeSeconds(wholeSeconds)
+                                .AddTicks(6250000)));
                 }
             });
+        }
+
+        [Test]
+        public void PublicJwtExpiryResolverAcceptsIntegerNumericDates()
+        {
+            long unixSeconds = Now.AddMinutes(10).ToUnixTimeSeconds();
+            string jwt = CreateSyntheticJwt(
+                unixSeconds.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+
+            bool resolved =
+                SessionAccessTokenExpiryResolver.TryResolveJwtExpiry(
+                    jwt,
+                    out DateTimeOffset expiresAtUtc);
+
+            Assert.That(resolved, Is.True);
+            Assert.That(
+                expiresAtUtc,
+                Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(unixSeconds)));
+        }
+
+        [Test]
+        public void PublicJwtExpiryResolverAcceptsNumericStrings()
+        {
+            long wholeSeconds = Now.AddMinutes(20).ToUnixTimeSeconds();
+            string numericDate = wholeSeconds.ToString(
+                System.Globalization.CultureInfo.InvariantCulture) +
+                ".125";
+            string jwt = CreateSyntheticJwt("\"" + numericDate + "\"");
+
+            bool resolved =
+                SessionAccessTokenExpiryResolver.TryResolveJwtExpiry(
+                    jwt,
+                    out DateTimeOffset expiresAtUtc);
+
+            Assert.That(resolved, Is.True);
+            Assert.That(
+                expiresAtUtc,
+                Is.EqualTo(
+                    DateTimeOffset.FromUnixTimeSeconds(wholeSeconds)
+                        .AddTicks(1250000)));
+            Assert.That(expiresAtUtc.Offset, Is.EqualTo(TimeSpan.Zero));
+        }
+
+        [TestCase("\"NaN\"")]
+        [TestCase("\"Infinity\"")]
+        [TestCase("true")]
+        [TestCase("\"9999999999999999999999999999\"")]
+        public void PublicJwtExpiryResolverRejectsInvalidNumericDates(
+            string expiryJson)
+        {
+            bool resolved =
+                SessionAccessTokenExpiryResolver.TryResolveJwtExpiry(
+                    CreateSyntheticJwt(expiryJson),
+                    out DateTimeOffset expiresAtUtc);
+
+            Assert.That(resolved, Is.False);
+            Assert.That(expiresAtUtc, Is.EqualTo(default(DateTimeOffset)));
         }
 
         [Test]
@@ -216,6 +279,56 @@ namespace Deucarian.Session.APIIntegration.Tests
                     Assert.That(result.Error.Message, Does.Not.Contain(requestUrl));
                     Assert.That(result.Error.Message, Does.Not.Contain("synthetic-secret"));
                     Assert.That(result.Error.Message, Does.Not.Contain("synthetic-access"));
+                }
+
+                Assert.That(client.Snapshot.SuppressLogging, Is.True);
+            });
+        }
+
+        [TestCase(
+            401L,
+            SessionTokenEndpointErrorCodes.AuthenticationRejected)]
+        [TestCase(
+            403L,
+            SessionTokenEndpointErrorCodes.AuthenticationRejected)]
+        [TestCase(
+            500L,
+            SessionTokenEndpointErrorCodes.RequestFailed)]
+        public void ApiFailuresPreserveSanitizedStatusClassification(
+            long statusCode,
+            string expectedCode)
+        {
+            RunAsync(async () =>
+            {
+                const string sensitiveMessage = "sensitive-response-sentinel";
+                var client = new RecordingApiClient
+                {
+                    NextResult = ApiResult<JObject>.Failure(
+                        new ApiError
+                        {
+                            HttpStatusCode = statusCode,
+                            Message = sensitiveMessage,
+                            BackendMessage = sensitiveMessage,
+                            RawResponseBody = sensitiveMessage
+                        },
+                        HttpMethod.POST)
+                };
+                var executor = new SessionTokenEndpointExecutor(
+                    client,
+                    () => Now);
+                using (SessionTokenEndpointInputValues inputs =
+                       CreateLoginInputs())
+                {
+                    SessionResult result = await executor.ExecuteAsync(
+                        CreateLoginConfig(),
+                        inputs);
+
+                    Assert.That(result.IsFailure, Is.True);
+                    Assert.That(result.Error.Code, Is.EqualTo(expectedCode));
+                    Assert.That(
+                        result.Error.Message,
+                        Does.Not.Contain(sensitiveMessage));
+                    Assert.That(result.Error.Exception, Is.Null);
                 }
 
                 Assert.That(client.Snapshot.SuppressLogging, Is.True);
@@ -363,11 +476,11 @@ namespace Deucarian.Session.APIIntegration.Tests
                 null);
         }
 
-        private static string CreateSyntheticJwt(long expiresAtUnixSeconds)
+        private static string CreateSyntheticJwt(string expiryJson)
         {
             return "synthetic." +
                    ToBase64Url(
-                       "{\"exp\":" + expiresAtUnixSeconds + "}") +
+                       "{\"exp\":" + expiryJson + "}") +
                    ".signature";
         }
 

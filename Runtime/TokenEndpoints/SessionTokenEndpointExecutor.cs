@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -135,7 +134,26 @@ namespace Deucarian.Session.APIIntegration
                     await apiClient.SendAsync<JObject>(
                         request,
                         cancellationToken);
-                if (apiResult == null || apiResult.IsFailure || apiResult.Data == null)
+                if (apiResult == null)
+                {
+                    return Failure(
+                        SessionTokenEndpointErrorCodes.RequestFailed,
+                        "Token endpoint request failed.");
+                }
+
+                if (apiResult.IsFailure)
+                {
+                    return IsAuthenticationRejected(apiResult.HttpStatusCode)
+                        ? Failure(
+                            SessionTokenEndpointErrorCodes
+                                .AuthenticationRejected,
+                            "Token endpoint authentication was rejected.")
+                        : Failure(
+                            SessionTokenEndpointErrorCodes.RequestFailed,
+                            "Token endpoint request failed.");
+                }
+
+                if (apiResult.Data == null)
                 {
                     return Failure(
                         SessionTokenEndpointErrorCodes.RequestFailed,
@@ -282,7 +300,9 @@ namespace Deucarian.Session.APIIntegration
             }
 
             if (mapping.UseJwtExpiryFallback &&
-                TryReadJwtExpiry(accessToken, out DateTimeOffset jwtExpiry))
+                SessionAccessTokenExpiryResolver.TryResolveJwtExpiry(
+                    accessToken,
+                    out DateTimeOffset jwtExpiry))
             {
                 expiresAtUtc = jwtExpiry.ToUniversalTime();
             }
@@ -337,62 +357,6 @@ namespace Deucarian.Session.APIIntegration
                    !double.IsNaN(seconds) &&
                    !double.IsInfinity(seconds) &&
                    seconds >= 0d;
-        }
-
-        private static bool TryReadJwtExpiry(
-            string accessToken,
-            out DateTimeOffset expiresAtUtc)
-        {
-            expiresAtUtc = default(DateTimeOffset);
-            if (string.IsNullOrWhiteSpace(accessToken))
-            {
-                return false;
-            }
-
-            string[] segments = accessToken.Split('.');
-            if (segments.Length < 2 || string.IsNullOrWhiteSpace(segments[1]))
-            {
-                return false;
-            }
-
-            try
-            {
-                string payload = segments[1]
-                    .Replace('-', '+')
-                    .Replace('_', '/');
-                switch (payload.Length % 4)
-                {
-                    case 2:
-                        payload += "==";
-                        break;
-                    case 3:
-                        payload += "=";
-                        break;
-                    case 1:
-                        return false;
-                }
-
-                JObject json = JObject.Parse(
-                    Encoding.UTF8.GetString(
-                        Convert.FromBase64String(payload)));
-                JToken expiry = json["exp"];
-                if (expiry == null ||
-                    !long.TryParse(
-                        expiry.ToString(),
-                        NumberStyles.Integer,
-                        CultureInfo.InvariantCulture,
-                        out long unixSeconds))
-                {
-                    return false;
-                }
-
-                expiresAtUtc = DateTimeOffset.FromUnixTimeSeconds(unixSeconds);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         private static bool TryReadString(
@@ -481,6 +445,11 @@ namespace Deucarian.Session.APIIntegration
         private static SessionResult Failure(string code, string message)
         {
             return SessionResult.Failed(code, message);
+        }
+
+        private static bool IsAuthenticationRejected(long? httpStatusCode)
+        {
+            return httpStatusCode == 401L || httpStatusCode == 403L;
         }
 
         private static void ClearRequest(ApiRequest request)
