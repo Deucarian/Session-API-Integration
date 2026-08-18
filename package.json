@@ -1,8 +1,8 @@
 {
   "name": "com.deucarian.session.api-integration",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "displayName": "Deucarian Session API Integration",
-  "description": "Integration package that exposes Deucarian Session tokens through Deucarian API authentication.",
+  "description": "Session-aware Deucarian API authentication plus credential-safe configurable token endpoint adapters.",
   "unity": "2021.3",
   "author": {
     "name": "Deucarian"
@@ -12,8 +12,9 @@
     "url": "git+https://github.com/Deucarian/Session-API-Integration.git"
   },
   "dependencies": {
-    "com.deucarian.api": "1.1.4",
-    "com.deucarian.session": "1.0.6"
+    "com.deucarian.api": "1.1.5",
+    "com.deucarian.session": "1.0.6",
+    "com.unity.nuget.newtonsoft-json": "3.2.2"
   },
   "keywords": [
     "session",

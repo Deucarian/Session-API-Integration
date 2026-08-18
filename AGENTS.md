@@ -10,11 +10,13 @@ Follow the canonical Deucarian governance docs in [Package Registry](https://git
 This package owns:
 
 - session-aware API adapter behavior.
+- generic credential-safe token endpoint profiles and Session login/refresh adapters implemented through API.
 
 This package must not own:
 
 - Own independent framework behavior outside the Session and API adapter boundary.
 - Duplicate target-package implementation logic.
+- Backend/product-specific endpoint presets, credentials, or authentication UI.
 
 ## Dependencies
 
@@ -26,6 +28,7 @@ Required dependencies and why:
 
 - `com.deucarian.api`: HTTP/API capability target.
 - `com.deucarian.session`: session lifecycle target.
+- `com.unity.nuget.newtonsoft-json`: generic token response JSON-path mapping.
 
 Optional/version-defined dependencies:
 
