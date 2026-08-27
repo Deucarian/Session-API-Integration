@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0 - 2026-08-26
+
+- Updated the exact Deucarian API dependency to 2.0.0.
+- Preserved the existing session authentication provider and credential-safe
+  token endpoint adapter contracts across the API 2.0 migration.
+
 ## 1.1.1 - 2026-08-18
 
 - Fixed JWT `exp` fallback for finite fractional NumericDate values and numeric strings.
