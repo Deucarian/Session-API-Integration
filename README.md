@@ -1,6 +1,6 @@
 # Deucarian Session API Integration
 
-`com.deucarian.session.api-integration` connects Deucarian Session to Deucarian API authentication. Version `1.1.0` also provides backend-neutral, credential-safe token endpoint profiles and adapters.
+`com.deucarian.session.api-integration` connects Deucarian Session to Deucarian API authentication. Version `1.2.0` provides API 2.0-compatible, backend-neutral, credential-safe token endpoint profiles and adapters.
 
 Use it when an application needs either:
 
@@ -26,7 +26,7 @@ Development:
 
 Dependencies:
 
-- `com.deucarian.api` `1.1.5`
+- `com.deucarian.api` `2.0.0`
 - `com.deucarian.session` `1.0.6`
 - `com.unity.nuget.newtonsoft-json` `3.2.2`
 
