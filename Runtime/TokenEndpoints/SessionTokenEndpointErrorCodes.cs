@@ -15,5 +15,11 @@ namespace Deucarian.Session.APIIntegration
             "token_endpoint_authentication_rejected";
         public const string InvalidResponse =
             "token_endpoint_invalid_response";
+        public const string EndpointNotFound = "token_endpoint_not_found";
+        public const string MethodNotAllowed = "token_endpoint_method_not_allowed";
+        public const string InvalidRequest = "token_endpoint_invalid_request";
+        public const string RequestTimeout = "token_endpoint_timeout";
+        public const string RateLimited = "token_endpoint_rate_limited";
+        public const string ServiceUnavailable = "token_endpoint_service_unavailable";
     }
 }
