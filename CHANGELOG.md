@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 - Unreleased
+
+- Classify missing endpoints, rejected requests, timeouts, throttling and server errors with stable sanitized codes and actionable descriptions. Never expose raw backend bodies, request URLs or credentials.
+
 ## 1.2.0 - 2026-08-26
 
 - Updated the exact Deucarian API dependency to 2.0.0.

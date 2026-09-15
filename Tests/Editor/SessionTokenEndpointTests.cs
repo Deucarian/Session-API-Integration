@@ -293,7 +293,16 @@ namespace Deucarian.Session.APIIntegration.Tests
             SessionTokenEndpointErrorCodes.AuthenticationRejected)]
         [TestCase(
             500L,
-            SessionTokenEndpointErrorCodes.RequestFailed)]
+            SessionTokenEndpointErrorCodes.ServiceUnavailable)]
+        [TestCase(404L, SessionTokenEndpointErrorCodes.EndpointNotFound)]
+        [TestCase(405L, SessionTokenEndpointErrorCodes.MethodNotAllowed)]
+        [TestCase(400L, SessionTokenEndpointErrorCodes.InvalidRequest)]
+        [TestCase(422L, SessionTokenEndpointErrorCodes.InvalidRequest)]
+        [TestCase(408L, SessionTokenEndpointErrorCodes.RequestTimeout)]
+        [TestCase(504L, SessionTokenEndpointErrorCodes.RequestTimeout)]
+        [TestCase(429L, SessionTokenEndpointErrorCodes.RateLimited)]
+        [TestCase(503L, SessionTokenEndpointErrorCodes.ServiceUnavailable)]
+        [TestCase(0L, SessionTokenEndpointErrorCodes.RequestFailed)]
         public void ApiFailuresPreserveSanitizedStatusClassification(
             long statusCode,
             string expectedCode)

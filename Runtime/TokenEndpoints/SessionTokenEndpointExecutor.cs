@@ -143,14 +143,7 @@ namespace Deucarian.Session.APIIntegration
 
                 if (apiResult.IsFailure)
                 {
-                    return IsAuthenticationRejected(apiResult.HttpStatusCode)
-                        ? Failure(
-                            SessionTokenEndpointErrorCodes
-                                .AuthenticationRejected,
-                            "Token endpoint authentication was rejected.")
-                        : Failure(
-                            SessionTokenEndpointErrorCodes.RequestFailed,
-                            "Token endpoint request failed.");
+                    return SessionTokenEndpointFailures.FromHttpStatus(apiResult.HttpStatusCode);
                 }
 
                 if (apiResult.Data == null)
@@ -445,11 +438,6 @@ namespace Deucarian.Session.APIIntegration
         private static SessionResult Failure(string code, string message)
         {
             return SessionResult.Failed(code, message);
-        }
-
-        private static bool IsAuthenticationRejected(long? httpStatusCode)
-        {
-            return httpStatusCode == 401L || httpStatusCode == 403L;
         }
 
         private static void ClearRequest(ApiRequest request)
